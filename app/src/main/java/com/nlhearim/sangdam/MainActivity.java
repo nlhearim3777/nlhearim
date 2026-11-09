@@ -73,6 +73,10 @@ public class MainActivity extends Activity {
         s.setBuiltInZoomControls(true);
         s.setDisplayZoomControls(false);
         s.setSupportZoom(true);
+        // 휴대폰 '글자 크기'를 크게 설정해 두면 WebView 가 페이지 전체를 확대하면서
+        // 화면 크기(vw/dvh) 계산이 어긋나 화면 일부만 채워지는 문제가 생깁니다.
+        // 사이트가 설계한 크기 그대로(100%) 보이도록 고정합니다.
+        s.setTextZoom(100);
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setJavaScriptCanOpenWindowsAutomatically(true);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
