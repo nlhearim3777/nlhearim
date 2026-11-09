@@ -1,0 +1,47 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk sangdam-app.apk
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sangdam-app
+          path: sangdam-app.apk
+
+      # 폰에서 바로 받을 수 있도록 Releases 페이지에도 올립니다.
+      - name: Publish to Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-latest
+          name: 상담 대시보드 앱 (최신)
+          prerelease: true
+          make_latest: false
+          body: |
+            최신 빌드 (${{ github.sha }})
+            아래 sangdam-app.apk 를 휴대폰에서 내려받아 설치하세요.
+          files: sangdam-app.apk
